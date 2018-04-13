@@ -1,0 +1,147 @@
+<html>
+    <head>
+        <style>
+        </style>
+    </head>
+    <body style="margin-left: 100px; margin-top:50px">
+        <div id="p_img_div_id">
+            <label style="border:2px rgb(248, 246, 246) none;background-color:rgb(90, 201, 252);">
+                    <input style="display:none;" type="file" name="picture" onchange="proImg_previewFile()">
+                     上傳圖片
+            </label> 
+            <div id="p_raw_img_id">
+                <img src="" height="200"  alt="Image preview...">
+            </div>
+        </div>
+        <div id="p_resize_img_div_id"></div>
+        <script>
+            //upload photo
+            function proImg_previewFile()
+            {
+                //clear page
+                if(document.getElementById('viewDiv')){
+                    document.getElementById('viewDiv').innerHTML = "";
+                    document.getElementById('reduceDiv').innerHTML = "";
+                }
+        
+                var imageHeight;
+                var imageWidth;
+                //selects the query named img
+                var preview = document.querySelector('img'); 
+                //sames as here
+                var file = document.querySelector('input[type=file]').files[0]; 
+                
+                var reader  = new FileReader();
+                reader.onloadend = function () 
+                {
+                    preview.src = reader.result;
+                    //create new image object to get the image height and width
+                    var image = new Image();
+                    image.src = reader.result;
+                    image.onload = function() 
+                    {
+                        imageHeight = this.height;
+                        imageWidth = this.width;
+                    }
+                };
+                if (file) 
+                {
+                    //reads the data as a URL
+                    reader.readAsDataURL(file);
+                    document.getElementById('p_raw_img_id').title = "size =" + (file.size/1000)+"KB";
+                    CreateSecondInputs()
+                } else 
+                {
+                    preview.src = "";
+                };
+                //get second inputs after photo upload
+                function CreateSecondInputs() {
+                    //create div to place new info
+                    var div = document.createElement('div');
+                    div.id = 'reduceDiv';
+                    //Add div to p_img_div_id div
+                    document.getElementById('p_img_div_id').appendChild(div);
+                    //create paragraph tag
+                    var p = document.createElement("p");
+                    document.getElementById('reduceDiv').appendChild(p);                      
+                    //craete button
+                    var btn = document.createElement("Button");
+                    btn.id="submit";
+                    var t = document.createTextNode("上傳");
+                    btn.appendChild(t);
+                    btn.onclick = imageConvertor;
+                    document.getElementById('reduceDiv').appendChild(btn);
+                }
+                //convert Image
+                function imageConvertor() {
+                    // ==== 轉換為想要的影像寬度 ===== //
+                    var wanted_W = 170;
+                    var percent  = wanted_W * 100 / imageWidth;
+                    //DATA
+                    var newHeight;
+                    var newWidth;
+                    //calculate the new height and width
+                    newHeight = (imageHeight * percent) / 100;
+                    newWidth = (imageWidth * percent) / 100;
+                    //clear div for new input
+                    if(document.getElementById('viewDiv')){
+                            document.getElementById('viewDiv').innerHTML = "";
+                    };
+                
+                    //create new image instance
+                    var image = new Image();
+                    var reader  = new FileReader();
+                    //set up image
+                    reader.onloadend = function () 
+                    {
+                        image.src = reader.result;
+                        image.onload = function() 
+                        {
+                            img.src = imageToDataUri(this, newWidth, newHeight );
+                            //get the calculated conversion to get the file size
+                            var imageDataURL = imageToDataUri(this, newWidth, newHeight);
+                            //split string to only view base64 strings
+                            var base64String = imageDataURL.split(",")[1];
+                            var newFileSize = Math.round(base64String.length * 3 / 4);
+                            document.getElementById('p_newImage').title = "size =" + (newFileSize/1000) + "KB";
+
+                        }
+                    };
+                    //reads the data as a URL
+                    reader.readAsDataURL(file);
+                    //create div to place new info
+                    var div = document.createElement('div');
+                    div.id = 'viewDiv';
+                    //Add div to p_img_div_id div
+                    document.getElementById('p_resize_img_div_id').appendChild(div);
+                    //set new image size
+                    //image info text describing the new size
+                    var p = document.createElement("p");
+                    
+                    document.getElementById('viewDiv').appendChild(p);
+                    //Display converted Image;
+                    var img = document.createElement("img");
+                    img.id = "p_newImage";
+                    img.height = 200;
+                    img.alt="Image preview!!"
+                    img.style.padding="10px";             
+                    document.getElementById('viewDiv').appendChild(img);
+                }
+                //use canvas to reduce the image size
+                imageToDataUri = function(img, width, height) 
+                {       
+                    // create an off-screen canvas
+                    var canvas = document.createElement('canvas'),
+                        ctx = canvas.getContext('2d');
+                    // set its dimension to target size
+                    canvas.width = width;
+                    canvas.height = height;
+                    // draw source image into the off-screen canvas:
+                    ctx.drawImage(img, 0, 0, width, height);
+                    // encode image to data-uri with base64 version of compressed image
+                    return canvas.toDataURL();
+                }
+            };
+        </script>
+    </body>
+</html>
