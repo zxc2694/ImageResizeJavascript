@@ -5,32 +5,30 @@
     </head>
     <body style="margin-left: 100px; margin-top:50px">
         <div id="p_img_div_id">
-            <label style="border:2px rgb(248, 246, 246) none;background-color:rgb(90, 201, 252);">
+            <label class="btn btn-info" style="border:2px rgb(202, 202, 202) none;background-color:rgb(83, 83, 83);">
                     <input style="display:none;" type="file" name="picture" onchange="proImg_previewFile()">
-                     上傳圖片
+                    <i class="fa fa-photo" ></i> 選擇圖片
             </label> 
-            <div id="p_raw_img_id">
-                <img src="" height="200"  alt="Image preview...">
+            <img id="p_raw_img_id" src="" height="200"  alt="Image preview...">
             </div>
-        </div>
-        <div id="p_resize_img_div_id"></div>
+            <div id="p_resize_img_div_id"></div>
         <script>
+            //upload photo
             //upload photo
             function proImg_previewFile()
             {
                 //clear page
-                if(document.getElementById('viewDiv')){
+                if(document.getElementById('viewDiv'))
+                {
                     document.getElementById('viewDiv').innerHTML = "";
                     document.getElementById('reduceDiv').innerHTML = "";
                 }
-        
                 var imageHeight;
                 var imageWidth;
                 //selects the query named img
                 var preview = document.querySelector('img'); 
                 //sames as here
-                var file = document.querySelector('input[type=file]').files[0]; 
-                
+                var file = document.querySelector('input[type=file]').files[0];        
                 var reader  = new FileReader();
                 reader.onloadend = function () 
                 {
@@ -42,6 +40,7 @@
                     {
                         imageHeight = this.height;
                         imageWidth = this.width;
+                        document.getElementById('p_raw_img_id').src = reader.result;
                     }
                 };
                 if (file) 
@@ -55,7 +54,8 @@
                     preview.src = "";
                 };
                 //get second inputs after photo upload
-                function CreateSecondInputs() {
+                function CreateSecondInputs() 
+                {
                     //create div to place new info
                     var div = document.createElement('div');
                     div.id = 'reduceDiv';
@@ -73,7 +73,8 @@
                     document.getElementById('reduceDiv').appendChild(btn);
                 }
                 //convert Image
-                function imageConvertor() {
+                function imageConvertor() 
+                {
                     // ==== 轉換為想要的影像寬度 ===== //
                     var wanted_W = 170;
                     var percent  = wanted_W * 100 / imageWidth;
@@ -84,8 +85,9 @@
                     newHeight = (imageHeight * percent) / 100;
                     newWidth = (imageWidth * percent) / 100;
                     //clear div for new input
-                    if(document.getElementById('viewDiv')){
-                            document.getElementById('viewDiv').innerHTML = "";
+                    if(document.getElementById('viewDiv'))
+                    {
+                        document.getElementById('viewDiv').innerHTML = "";
                     };
                 
                     //create new image instance
